@@ -1,16 +1,16 @@
-logging
+import logging
 import smtplib
 from email.mime.text import MIMEText
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(name)
+logger = logging.getLogger(__name__)
 
 # Email configuration
 EMAIL_ADDRESS = 'asssasin105@gmail.com'
-EMAIL_PASSWORD = 'tattigal'
+EMAIL_PASSWORD = 'tattigal'  # Make sure to use an app password if 2FA is enabled
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 
@@ -45,11 +45,12 @@ def send(update: Update, context: CallbackContext) -> None:
             send_email(recipient, subject, body)
             update.message.reply_text(f'Email sent to {recipient}')
         except Exception as e:
+            logger.error(f'Failed to send email to {recipient}: {e}')
             update.message.reply_text(f'Failed to send email to {recipient}: {e}')
 
 # Main function to run the bot
 def main():
-    updater = Updater("7200863338:AAHB5vASJK7luUk9K2OIa1suB2b-Jf4BsIQ")
+    updater = Updater("YOUR_TELEGRAM_BOT_TOKEN_HERE")  # Replace with your bot token
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
@@ -61,9 +62,8 @@ def main():
     # Start the Bot
     updater.start_polling()
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT
+    # Run the bot until you press Ctrl-C or the process receives SIGINT, SIGTERM or SIGABRT
     updater.idle()
 
-if name == 'main':
+if __name__ == '__main__':
     main()
