@@ -1,69 +1,83 @@
-import logging
 import smtplib
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from telegram import Update
+from telegram import Bot, Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
+from email_validator import validate_email, EmailNotValidError
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(name)
+# Your Telegram bot token
+TELEGRAM_API_TOKEN = '7200863338:AAHB5vASJK7luUk9K2OIa1suB2b-Jf4BsIQ'
 
-# Email configuration
-EMAIL_ADDRESS = 'asssasin105@gmail.com'
-EMAIL_PASSWORD = 'tattigal'  # Make sure to use an app password if 2FA is enabled
-SMTP_SERVER = 'smtp.gmail.com'
+# Email account details for SMTP
+SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
+SENDER_EMAIL = "asssasin105@gmail.com"  # Your email
+SENDER_PASSWORD = "tattigal"  # Your email password (or app password if 2FA enabled)
 
-# Function to send emails
-def send_email(recipient, subject, body):
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = EMAIL_ADDRESS
-    msg['To'] = recipient
+# List of recipient email addresses
+RECIPIENTS = ["mail@bka.bund.de", "dsa.telegram@edsr.eu"]  # Add your recipients here
 
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.sendmail(EMAIL_ADDRESS, recipient, msg.as_string())
+# Function to send email
+def send_email(subject, body):
+    try:
+        # Set up the MIME
+        msg = MIMEMultipart()
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = ", ".join(RECIPIENTS)  # Multiple recipients
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
 
-# Start command handler
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Welcome! Use /send to send mass emails.')
+        # Set up the SMTP server and send the email
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()  # Secure the connection
+            server.login(SENDER_EMAIL, SENDER_PASSWORD)
+            text = msg.as_string()
+            server.sendmail(SENDER_EMAIL, RECIPIENTS, text)
 
-# Send command handler
-def send(update: Update, context: CallbackContext) -> None:
-    if len(context.args) < 3:
-        update.message.reply_text('Usage: /send <subject> <body> <recipient1> <recipient2> ...')
-        return
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Error: {e}")
 
-    subject = context.args[0]
-    body = context.args[1]
-    recipients = context.args[2:]
+# Start command handler for the Telegram bot
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text("Hello! Send '/send_mass_email' to send a mass email.")
 
-    for recipient in recipients:
-        try:
-            send_email(recipient, subject, body)
-            update.message.reply_text(f'Email sent to {recipient}')
-        except Exception as e:
-            logger.error(f'Failed to send email to {recipient}: {e}')
-            update.message.reply_text(f'Failed to send email to {recipient}: {e}')
+# Send mass email command handler for the Telegram bot
+def send_mass_email(update: Update, context: CallbackContext):
+    # Basic email details
+    subject = "Mass Email Subject"
+    body = "This is the body of the mass email."
 
-# Main function to run the bot
+    try:
+        # Validate email format
+        for recipient in RECIPIENTS:
+            try:
+                validate_email(recipient)
+            except EmailNotValidError as e:
+                update.message.reply_text(f"Invalid email: {recipient}")
+                return
+        
+        # Send email
+        send_email(subject, body)
+        update.message.reply_text("Mass email sent successfully!")
+    except Exception as e:
+        update.message.reply_text(f"Error: {e}")
+
+# Main function to start the Telegram bot
 def main():
-    updater = Updater("YOUR_TELEGRAM_BOT_TOKEN_HERE")  # Replace with your bot token
+    # Create Updater and pass your bot's token
+    updater = Updater(TELEGRAM_API_TOKEN, use_context=True)
 
     # Get the dispatcher to register handlers
-    dp = updater.dispatcher
+    dispatcher = updater.dispatcher
 
-    # Register command handlers
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("send", send))
+    # Add handlers for commands
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("send_mass_email", send_mass_email))
 
-    # Start the Bot
+    # Start the bot
     updater.start_polling()
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT, SIGTERM or SIGABRT
     updater.idle()
 
-if name == 'main':
+if __name__ == '__main__':
     main()
