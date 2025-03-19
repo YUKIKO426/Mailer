@@ -1,1 +1,1 @@
-python /workspace/bot.py
+web: python /workspace/bot.py
