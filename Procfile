@@ -1,1 +1,1 @@
-python telegram-email-/bot.py
+python /workspace/bot.py
