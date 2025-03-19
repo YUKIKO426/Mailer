@@ -5,6 +5,17 @@ from telegram import Bot, Update
 from telegram.ext import ApplicationBuilder, CommandHandler
 import yagmail
 import os
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 8080))  # Koyeb expects 8080
+    app.run(host="0.0.0.0", port=port)
 
 # Telegram bot token (Get this from @BotFather)
 TELEGRAM_BOT_TOKEN = "7200863338:AAHB5vASJK7luUk9K2OIa1suB2b-Jf4BsIQ"
