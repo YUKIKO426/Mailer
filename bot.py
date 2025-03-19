@@ -22,7 +22,7 @@ TELEGRAM_BOT_TOKEN = "7200863338:AAHB5vASJK7luUk9K2OIa1suB2b-Jf4BsIQ"
 
 # Email credentials (Use an App Password if using Gmail)
 EMAIL_ADDRESS = "asssasin105@gmail.com"
-EMAIL_PASSWORD = "tattigal"
+EMAIL_PASSWORD = "cjih fryt nguh Iztv"
 
 # Initialize email sender
 yag = yagmail.SMTP(EMAIL_ADDRESS, EMAIL_PASSWORD)
