@@ -1,1 +1,2 @@
-web: python /workspacebot.py/bot.py
+cd /workspace
+python bot.py
