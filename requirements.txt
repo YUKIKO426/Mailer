@@ -2,4 +2,4 @@ python-telegram-bot==20.0
 yagmail
 Flask
 gunicorn
-
+pip install -r requirements.txt
