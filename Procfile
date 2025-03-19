@@ -1,1 +1,1 @@
-web: python bot.py
+python telegram-email-/bot.py
