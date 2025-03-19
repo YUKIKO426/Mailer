@@ -68,7 +68,7 @@ def main():
     # Create Updater and pass your bot's token
     from telegram.ext import Application
 
-app = Application.builder().token(TELEGRAM_API_TOKEN).build()
+app = ApplicationBuilder().token(TELEGRAM_API_TOKEN).build()
 
 
     # Get the dispatcher to register handlers
