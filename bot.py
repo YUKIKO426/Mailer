@@ -66,7 +66,10 @@ def send_mass_email(update: Update, context: CallbackContext):
 # Main function to start the Telegram bot
 def main():
     # Create Updater and pass your bot's token
-    updater = Updater(TELEGRAM_API_TOKEN, use_context=True)
+    from telegram.ext import Application
+
+app = Application.builder().token(TELEGRAM_API_TOKEN).build()
+
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -76,7 +79,7 @@ def main():
     dispatcher.add_handler(CommandHandler("send_mass_email", send_mass_email))
 
     # Start the bot
-    updater.start_polling()
+    app.run_polling()
     updater.idle()
 
 if __name__ == "__main__":
