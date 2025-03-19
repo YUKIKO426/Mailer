@@ -1,2 +1,1 @@
-cd /workspace
-python bot.py
+cd /workspace python bot.py
