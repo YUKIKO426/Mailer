@@ -1,1 +1,1 @@
-web: python /telegram-email-bot.py/bot.py
+web: python /workspacebot.py/bot.py
