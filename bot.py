@@ -72,6 +72,8 @@ app = Application.builder().token(TELEGRAM_API_TOKEN).build()
 
 
     # Get the dispatcher to register handlers
+def main():
+    updater = Updater(TELEGRAM_API_TOKEN)
     dispatcher = updater.dispatcher
 
     # Add handlers for commands
